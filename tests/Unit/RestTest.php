@@ -5,18 +5,18 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use MilesChou\Rest\Caller;
-use MilesChou\Rest\Client;
+use MilesChou\Rest\Rest;
 use MilesChou\Rest\HttpFactory\LaminasFactory;
 use Tests\TestCase;
 
-class ClientTest extends TestCase
+class RestTest extends TestCase
 {
     /**
      * @test
      */
     public function shouldBeOkayWhenCallAnAddedApi(): void
     {
-        $target = new Client(new LaminasFactory());
+        $target = new Rest(new LaminasFactory());
 
         $target->addApi('foo', 'get', 'http://somewhere');
 

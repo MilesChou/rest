@@ -4,7 +4,7 @@ namespace MilesChou\Rest;
 
 use MilesChou\Rest\Contracts\HttpFactoryInterface;
 
-class Client
+class Rest
 {
 
     /**
