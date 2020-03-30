@@ -17,7 +17,7 @@ class CollectionTest extends TestCase
     public function shouldBeOkay(): void
     {
         $target = new Collection();
-        $target->add(new Api('get', (new LaminasFactory())->createUri('http://somewhere')));
+        $target->add('foo', new Api('get', (new LaminasFactory())->createUri('http://somewhere')));
 
         $this->markTestIncomplete();
     }
