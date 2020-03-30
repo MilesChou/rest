@@ -21,7 +21,6 @@ class ClientManager implements ClientInterface
     private $drivers = [];
 
     /**
-     * ClientManager constructor.
      * @param ClientInterface $default
      */
     public function __construct(ClientInterface $default)
@@ -41,24 +40,20 @@ class ClientManager implements ClientInterface
     }
 
     /**
-     * @return ClientInterface
-     */
-    public function default(): ClientInterface
-    {
-        return $this->default;
-    }
-
-    /**
      * @param string $name
      * @return ClientInterface
      */
-    public function driver(string $name): ClientInterface
+    public function driver(?string $name = null): ClientInterface
     {
-        if (!$this->has($name)) {
-            throw new OutOfRangeException("Client driver '{$name}' is not found");
+        if (null === $name) {
+            return $this->default;
         }
 
-        return $this->drivers[$name];
+        if ($this->has($name)) {
+            return $this->drivers[$name];
+        }
+
+        throw new OutOfRangeException("Client driver '{$name}' is not found");
     }
 
     /**

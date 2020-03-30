@@ -2,6 +2,8 @@
 
 namespace MilesChou\Rest;
 
+use Psr\Http\Client\ClientInterface;
+
 class Caller
 {
     /**
@@ -10,10 +12,17 @@ class Caller
     private $api;
 
     /**
+     * @var ClientInterface
+     */
+    private $client;
+
+    /**
+     * @param ClientInterface $client
      * @param Api $api
      */
-    public function __construct(Api $api)
+    public function __construct(ClientInterface $client, Api $api)
     {
+        $this->client = $client;
         $this->api = $api;
     }
 }

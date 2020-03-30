@@ -3,9 +3,14 @@
 namespace MilesChou\Rest;
 
 use MilesChou\Rest\Contracts\HttpFactoryInterface;
+use Psr\Http\Client\ClientInterface;
 
 class Rest
 {
+    /**
+     * @var ClientManager
+     */
+    private $clientManager;
 
     /**
      * @var Collection
@@ -19,11 +24,18 @@ class Rest
 
     /**
      * @param HttpFactoryInterface $httpFactory
+     * @param ClientInterface $clientManager
      */
-    public function __construct(HttpFactoryInterface $httpFactory)
+    public function __construct(HttpFactoryInterface $httpFactory, ClientInterface $clientManager)
     {
         $this->httpFactory = $httpFactory;
         $this->collection = new Collection();
+
+        if (!$clientManager instanceof ClientManager) {
+            $clientManager = new ClientManager($clientManager);
+        }
+
+        $this->clientManager = $clientManager;
     }
 
     /**
@@ -47,6 +59,9 @@ class Rest
      */
     public function call(string $name): Caller
     {
-        return new Caller($this->collection->get($name));
+        $api = $this->collection->get($name);
+        $client = $this->clientManager->driver($api->getDriver());
+
+        return new Caller($client, $api);
     }
 }

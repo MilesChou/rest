@@ -22,7 +22,7 @@ class ClientManagerTest extends TestCase
 
         $target = new ClientManager($expected);
 
-        $this->assertSame($expected, $target->default());
+        $this->assertSame($expected, $target->driver());
     }
 
     /**
@@ -35,7 +35,7 @@ class ClientManagerTest extends TestCase
         $target = new ClientManager(new MockClient());
         $target->setDefault($expected);
 
-        $this->assertSame($expected, $target->default());
+        $this->assertSame($expected, $target->driver());
     }
 
     /**
