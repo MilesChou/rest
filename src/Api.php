@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace MilesChou\Rest;
 
+use Psr\Http\Message\UriInterface;
+
 class Api
 {
     /**
@@ -12,25 +14,15 @@ class Api
     private $method;
 
     /**
-     * @var string
+     * @var UriInterface
      */
     private $uri;
 
     /**
      * @param string $method
-     * @param string $uri
-     * @return Api
+     * @param UriInterface $uri
      */
-    public static function create($method, $uri): Api
-    {
-        return new self($method, $uri);
-    }
-
-    /**
-     * @param string $method
-     * @param string $uri
-     */
-    public function __construct(string $method, string $uri)
+    public function __construct(string $method, UriInterface $uri)
     {
         $this->method = strtoupper($method);
         $this->uri = $uri;
@@ -45,9 +37,10 @@ class Api
     }
 
     /**
-     * @return string
+     * @return UriInterface
+     *
      */
-    public function getUri(): string
+    public function getUri(): UriInterface
     {
         return $this->uri;
     }

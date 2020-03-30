@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use MilesChou\Rest\Api;
+use MilesChou\Rest\HttpFactory\LaminasFactory;
 use Tests\TestCase;
 
 class ApiTest extends TestCase
@@ -14,9 +15,9 @@ class ApiTest extends TestCase
      */
     public function shouldBeOkayWhenCreateBasic(): void
     {
-        $actual = Api::create('get', 'somewhere');
+        $actual = new Api('get', (new LaminasFactory())->createUri('http://somewhere'));
 
         $this->assertSame('GET', $actual->getMethod());
-        $this->assertSame('somewhere', $actual->getUri());
+        $this->assertSame('http://somewhere', (string)$actual->getUri());
     }
 }

@@ -7,7 +7,7 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UriFactoryInterface;
 
-interface HttpFactory extends
+interface HttpFactoryInterface extends
     RequestFactoryInterface,
     ResponseFactoryInterface,
     StreamFactoryInterface,

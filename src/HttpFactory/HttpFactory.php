@@ -2,13 +2,13 @@
 
 namespace MilesChou\Rest\HttpFactory;
 
-use MilesChou\Rest\Contracts\HttpFactory;
+use MilesChou\Rest\Contracts\HttpFactoryInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UriFactoryInterface;
 
-abstract class AbstractHttpFactory implements HttpFactory
+abstract class HttpFactory implements HttpFactoryInterface
 {
     /**
      * @var string

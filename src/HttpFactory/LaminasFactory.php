@@ -14,7 +14,7 @@ use Psr\Http\Message\UriInterface;
 /**
  * Bridge to Laminas Factories
  */
-class LaminasFactory extends AbstractHttpFactory
+class LaminasFactory extends HttpFactory
 {
     protected $responseFactoryClass = ResponseFactory::class;
 

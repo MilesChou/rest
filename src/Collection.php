@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MilesChou\Rest;
 
-class RestCollection
+class Collection
 {
     /**
      * @var Api[]
