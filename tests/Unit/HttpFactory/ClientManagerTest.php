@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use Laminas\Diactoros\Request;
+use Laminas\Diactoros\Response;
 use MilesChou\Mocker\Psr18\MockClient;
 use MilesChou\Rest\ClientManager;
 use OutOfRangeException;
@@ -59,5 +61,20 @@ class ClientManagerTest extends TestCase
         $target = new ClientManager(new MockClient());
 
         $target->driver('not-found');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldProxyToDefaultClient(): void
+    {
+        $expected = new Response();
+
+        $client = new MockClient();
+        $client->appendResponse($expected);
+
+        $target = new ClientManager($client);
+
+        $this->assertSame($expected, $target->sendRequest(new Request()));
     }
 }

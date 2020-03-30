@@ -3,9 +3,12 @@
 namespace MilesChou\Rest;
 
 use OutOfRangeException;
+use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
-class ClientManager
+class ClientManager implements ClientInterface
 {
     /**
      * @var ClientInterface
@@ -65,6 +68,18 @@ class ClientManager
     public function has(string $name): bool
     {
         return isset($this->drivers[$name]);
+    }
+
+    /**
+     * Proxy to default driver
+     *
+     * @param RequestInterface $request
+     * @return ResponseInterface
+     * @throws ClientExceptionInterface
+     */
+    public function sendRequest(RequestInterface $request): ResponseInterface
+    {
+        return $this->default->sendRequest($request);
     }
 
     /**
