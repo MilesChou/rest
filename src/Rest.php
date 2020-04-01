@@ -2,11 +2,16 @@
 
 namespace MilesChou\Rest;
 
-use MilesChou\Rest\Contracts\HttpFactoryInterface;
+use MilesChou\Psr\Http\Client\ClientManager;
+use MilesChou\Psr\Http\Message\HttpFactory;
+use MilesChou\Psr\Http\Message\HttpFactoryAwareTrait;
+use MilesChou\Psr\Http\Message\HttpFactoryInterface;
 use Psr\Http\Client\ClientInterface;
 
 class Rest
 {
+    use HttpFactoryAwareTrait;
+
     /**
      * @var ClientManager
      */
@@ -18,24 +23,18 @@ class Rest
     private $collection;
 
     /**
-     * @var HttpFactoryInterface
-     */
-    private $httpFactory;
-
-    /**
-     * @param HttpFactoryInterface $httpFactory
      * @param ClientInterface $clientManager
+     * @param HttpFactoryInterface $httpFactory
      */
-    public function __construct(HttpFactoryInterface $httpFactory, ClientInterface $clientManager)
+    public function __construct(ClientInterface $clientManager, HttpFactoryInterface $httpFactory = null)
     {
-        $this->httpFactory = $httpFactory;
-        $this->collection = new Collection();
-
         if (!$clientManager instanceof ClientManager) {
             $clientManager = new ClientManager($clientManager);
         }
 
         $this->clientManager = $clientManager;
+        $this->httpFactory = $httpFactory ?? new HttpFactory();
+        $this->collection = new Collection();
     }
 
     /**

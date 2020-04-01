@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
-use MilesChou\Mocker\Psr18\MockClient;
+use MilesChou\Psr\Http\Client\Testing\MockClient;
+use MilesChou\Psr\Http\Message\HttpFactory;
 use MilesChou\Rest\Caller;
 use MilesChou\Rest\Rest;
-use MilesChou\Rest\HttpFactory\LaminasFactory;
 use Tests\TestCase;
 
 class RestTest extends TestCase
@@ -17,7 +17,7 @@ class RestTest extends TestCase
      */
     public function shouldBeOkayWhenCallAnAddedApi(): void
     {
-        $target = new Rest(new LaminasFactory(), new MockClient());
+        $target = new Rest(new MockClient(), new HttpFactory());
 
         $target->addApi('foo', 'get', 'http://somewhere');
 
