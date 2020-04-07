@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace MilesChou\Rest;
 
-use Psr\Http\Message\UriInterface;
+use InvalidArgumentException;
+use RuntimeException;
 
 class Api
 {
@@ -21,16 +22,27 @@ class Api
     private $method;
 
     /**
-     * @var UriInterface
+     * @var string
      */
     private $uri;
 
     /**
+     * @param array<mixed> $parameters
+     * @return bool
+     */
+    private static function guessParametersIsSequence(array $parameters): bool
+    {
+        $keys = array_keys($parameters);
+
+        return \is_int($keys[0]);
+    }
+
+    /**
      * @param string $method
-     * @param UriInterface $uri
+     * @param string $uri
      * @param string|null $driver
      */
-    public function __construct(string $method, UriInterface $uri, ?string $driver = null)
+    public function __construct(string $method, string $uri, ?string $driver = null)
     {
         $this->method = strtoupper($method);
         $this->uri = $uri;
@@ -54,11 +66,75 @@ class Api
     }
 
     /**
-     * @return UriInterface
-     *
+     * @return array<string>
      */
-    public function getUri(): UriInterface
+    public function getPathParameter(): array
+    {
+        preg_match_all('/\/{(.*)}/U', $this->uri, $binding);
+
+        return $binding[1];
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasPathParameter(): bool
+    {
+        return (bool)preg_match('/{.+}/', $this->uri);
+    }
+
+    /**
+     * @return string
+     */
+    public function getUri(): string
     {
         return $this->uri;
+    }
+
+    /**
+     * @param array<int, mixed> $parameters
+     * @return string
+     */
+    public function getUriWithPathParameters(...$parameters): string
+    {
+        if (!$this->hasPathParameter()) {
+            return $this->uri;
+        }
+
+        if (is_array($parameters[0])) {
+            $parameters = $parameters[0];
+        }
+
+        $uri = $this->getUri();
+
+        if (self::guessParametersIsSequence($parameters)) {
+            $parameters = $this->buildParametersBySequence($parameters);
+        }
+
+        foreach ($parameters as $key => $value) {
+            $uri = str_replace("{{$key}}", $value, $uri);
+        }
+
+        if (preg_match('/{.+}/', $uri)) {
+            throw new RuntimeException('Binding not complete');
+        }
+
+        return $uri;
+    }
+
+    /**
+     * @param array $values
+     * @return array
+     * @throws InvalidArgumentException
+     */
+    private function buildParametersBySequence(array $values): array
+    {
+        $keys = $this->getPathParameter();
+
+        if (count($keys) !== count($values)) {
+            throw new InvalidArgumentException('Parameters count is invalid');
+        }
+
+        return array_combine($keys, $values);
     }
 }

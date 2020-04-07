@@ -6,7 +6,7 @@ namespace Tests\Unit;
 
 use MilesChou\Psr\Http\Client\Testing\MockClient;
 use MilesChou\Psr\Http\Message\HttpFactory;
-use MilesChou\Rest\Caller;
+use MilesChou\Rest\Pending;
 use MilesChou\Rest\Rest;
 use Tests\TestCase;
 
@@ -23,7 +23,7 @@ class RestTest extends TestCase
 
         $actual = $target->call('foo');
 
-        $this->assertInstanceOf(Caller::class, $actual);
+        $this->assertInstanceOf(Pending::class, $actual);
 
         $this->markTestIncomplete();
     }

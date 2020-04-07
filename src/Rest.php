@@ -45,7 +45,7 @@ class Rest
      */
     public function addApi(string $name, string $method, string $uri): Api
     {
-        $api = new Api($method, $this->httpFactory->createUri($uri));
+        $api = new Api($method, $uri);
 
         $this->collection->add($name, $api);
 
@@ -54,13 +54,13 @@ class Rest
 
     /**
      * @param string $name
-     * @return Caller
+     * @return Pending
      */
-    public function call(string $name): Caller
+    public function call(string $name): Pending
     {
         $api = $this->collection->get($name);
         $client = $this->clientManager->driver($api->getDriver());
 
-        return new Caller($client, $api);
+        return new Pending($client, $api);
     }
 }

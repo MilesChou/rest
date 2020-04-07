@@ -4,7 +4,7 @@ namespace MilesChou\Rest;
 
 use Psr\Http\Client\ClientInterface;
 
-class Caller
+class Pending
 {
     /**
      * @var Api
