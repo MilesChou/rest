@@ -39,6 +39,14 @@ class Rest
     }
 
     /**
+     * Proxy to call() method
+     */
+    public function __call($name, $arguments)
+    {
+        return $this->call($name, $arguments);
+    }
+
+    /**
      * @param string $name
      * @param string $method
      * @param string $uri
