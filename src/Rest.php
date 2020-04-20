@@ -59,8 +59,11 @@ class Rest
     public function call(string $name): Pending
     {
         $api = $this->collection->get($name);
-        $client = $this->clientManager->driver($api->getDriver());
 
-        return new Pending($client, $api);
+        return new Pending(
+            $this->clientManager->driver($api->getDriver()),
+            $this->httpFactory,
+            $api
+        );
     }
 }
