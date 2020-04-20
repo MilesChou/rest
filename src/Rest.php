@@ -55,13 +55,18 @@ class Rest
 
     /**
      * @param string $name
+     * @param array $parameters
      * @return PendingRequest
      */
-    public function call(string $name): PendingRequest
+    public function call(string $name, ...$parameters): PendingRequest
     {
         $api = $this->collection->get($name);
 
-        $request = $this->httpFactory->createRequest($api->getMethod(), $api->getUri());
+        $request = $this->httpFactory->createRequest(
+            $api->getMethod(),
+            $api->getUriWithPathParameters(...$parameters)
+        );
+
         $client = $this->clientManager->driver($api->getDriver());
 
         return new PendingRequest($request, $client);

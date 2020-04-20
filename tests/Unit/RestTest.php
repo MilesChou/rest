@@ -34,6 +34,25 @@ class RestTest extends TestCase
     /**
      * @test
      */
+    public function shouldCanCallWhenCallAnAddedApiWithPathParameter(): void
+    {
+        $mockClient = MockClient::createAlwaysReturnEmptyResponse();
+
+        $target = new Rest($mockClient, new HttpFactory());
+
+        $target->addApi('foo', 'get', 'http://somewhere/{path}');
+
+        $target->call('foo', 'bar')
+            ->send();
+
+        $mockClient->testRequest()
+            ->assertMethod('GET')
+            ->assertUri('http://somewhere/bar');
+    }
+
+    /**
+     * @test
+     */
     public function shouldCanCallWhenCallAnAddedApiWithQuery(): void
     {
         $mockClient = MockClient::createAlwaysReturnEmptyResponse();
