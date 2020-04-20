@@ -14,11 +14,11 @@ class CollectionTest extends TestCase
     /**
      * @test
      */
-    public function shouldBeOkay(): void
+    public function shouldBeOkayWhenAdd(): void
     {
         $target = new Collection();
         $target->add('foo', new Api('get', 'http://somewhere'));
 
-        $this->markTestIncomplete();
+        $this->assertTrue($target->has('foo'));
     }
 }
