@@ -7,11 +7,13 @@ use MilesChou\Psr\Http\Client\ClientManagerInterface;
 use MilesChou\Psr\Http\Message\HttpFactory;
 use MilesChou\Psr\Http\Message\HttpFactoryAwareTrait;
 use MilesChou\Psr\Http\Message\HttpFactoryInterface;
+use MilesChou\Rest\Traits\GroupMixin;
 use Psr\Http\Client\ClientInterface;
 
 class Rest
 {
     use HttpFactoryAwareTrait;
+    use GroupMixin;
 
     /**
      * @var ClientManagerInterface
@@ -36,6 +38,7 @@ class Rest
         $this->clientManager = $clientManager;
         $this->httpFactory = $httpFactory ?? new HttpFactory();
         $this->collection = new Collection();
+        $this->group = new Group();
     }
 
     /**

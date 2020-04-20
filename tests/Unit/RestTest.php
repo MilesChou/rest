@@ -7,6 +7,7 @@ namespace Tests\Unit;
 use MilesChou\Psr\Http\Client\ClientManager;
 use MilesChou\Psr\Http\Client\Testing\MockClient;
 use MilesChou\Psr\Http\Message\HttpFactory;
+use MilesChou\Rest\Group;
 use MilesChou\Rest\Rest;
 use Tests\TestCase;
 
@@ -152,5 +153,28 @@ class RestTest extends TestCase
             ->assertUri('http://somewhere')
             ->assertContentType('application/x-www-form-urlencoded')
             ->assertBodyContains('foo=bar');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCanCallWhenCallAddedRestGroup(): void
+    {
+        $mockClient = MockClient::createAlwaysReturnEmptyResponse();
+
+        $added = new Rest($mockClient, new HttpFactory());
+        $added->addApi('foo', 'POST', 'http://somewhere');
+
+        $group = (new Group())->set('some', $added);
+
+        $target = new Rest($mockClient, new HttpFactory());
+        $target->setGroup($group);
+
+        $target->some->foo()
+            ->send();
+
+        $mockClient->testRequest()
+            ->assertMethod('POST')
+            ->assertUri('http://somewhere');
     }
 }
