@@ -45,7 +45,7 @@ class Api
     public function __construct(string $method, string $uri, ?string $driver = null)
     {
         $this->method = strtoupper($method);
-        $this->uri = $uri;
+        $this->uri = $this->normalizeUri($uri);
         $this->driver = $driver;
     }
 
@@ -136,5 +136,26 @@ class Api
         }
 
         return array_combine($keys, $values);
+    }
+
+    /**
+     * @param string $uri
+     * @return string
+     */
+    private function normalizeUri(string $uri): string
+    {
+        $parts = parse_url($uri);
+
+        if ($parts === false) {
+            throw new InvalidArgumentException("Unable to parse URI: $uri");
+        }
+
+        // Has scheme and host
+        if (array_key_exists('host', $parts)) {
+            return $uri;
+        }
+
+        // No scheme or host
+        return strpos($uri, '/') === 0 ? $uri : '/' . $uri;
     }
 }

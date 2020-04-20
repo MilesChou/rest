@@ -16,6 +16,11 @@ class Rest
     use GroupMixin;
 
     /**
+     * @var string
+     */
+    private $baseUrl;
+
+    /**
      * @var ClientManagerInterface
      */
     private $clientManager;
@@ -53,11 +58,12 @@ class Rest
      * @param string $name
      * @param string $method
      * @param string $uri
+     * @param string|null $driver
      * @return Api
      */
-    public function addApi(string $name, string $method, string $uri): Api
+    public function addApi(string $name, string $method, string $uri, ?string $driver = null): Api
     {
-        $api = new Api($method, $uri);
+        $api = new Api($method, $uri, $driver);
 
         $this->collection->add($name, $api);
 
@@ -75,11 +81,38 @@ class Rest
 
         $request = $this->httpFactory->createRequest(
             $api->getMethod(),
-            $api->getUriWithPathParameters(...$parameters)
+            $this->normalizeUri($api->getUriWithPathParameters(...$parameters))
         );
 
         $client = $this->clientManager->driver($api->getDriver());
 
         return (new PendingRequest($request, $client))->setHttpFactory($this->httpFactory);
+    }
+
+    /**
+     * @param string $baseUrl
+     * @return Rest
+     */
+    public function setBaseUrl(string $baseUrl): Rest
+    {
+        // Normalize
+        if ('/' === substr($baseUrl, -1)) {
+            $baseUrl = substr($baseUrl, 0, -1);
+        }
+
+        $this->baseUrl = $baseUrl;
+
+        return $this;
+    }
+
+    /**
+     * @param string $uri
+     * @return string
+     */
+    private function normalizeUri(string $uri): string
+    {
+        $parts = parse_url($uri);
+
+        return array_key_exists('host', $parts) ? $uri : $this->baseUrl . $uri;
     }
 }

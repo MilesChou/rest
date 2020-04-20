@@ -177,4 +177,23 @@ class RestTest extends TestCase
             ->assertMethod('POST')
             ->assertUri('http://somewhere');
     }
+    /**
+     * @test
+     */
+    public function shouldCanCallWhenCallApiWithBaseUrl(): void
+    {
+        $mockClient = MockClient::createAlwaysReturnEmptyResponse();
+
+        $target = new Rest(new ClientManager($mockClient), new HttpFactory());
+
+        $target->addApi('foo', 'get', '/foo/{bar}');
+        $target->setBaseUrl('http://somewhere/');
+
+        $target->call('foo', 'some')
+            ->send();
+
+        $mockClient->testRequest()
+            ->assertMethod('GET')
+            ->assertUri('http://somewhere/foo/some');
+    }
 }
