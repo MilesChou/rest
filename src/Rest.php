@@ -81,7 +81,7 @@ class Rest
 
         $request = $this->httpFactory->createRequest(
             $api->getMethod(),
-            $this->normalizeUri($api->getUriWithPathParameters(...$parameters))
+            $this->normalizeUri($api->getUriWithParameters(...$parameters))
         );
 
         $client = $this->clientManager->driver($api->getDriver());

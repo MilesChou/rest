@@ -26,53 +26,53 @@ class ApiTest extends TestCase
     /**
      * @test
      */
-    public function shouldReturnKeysWhenCreateWithPathParameters(): void
+    public function shouldReturnKeysWhenCreateWithParameters(): void
     {
         $target = new Api('GET', 'http://somewhere/{foo}/{bar}');
 
-        $this->assertTrue($target->hasPathParameter());
-        $this->assertSame(['foo', 'bar'], $target->getPathParameter());
+        $this->assertTrue($target->hasParameter());
+        $this->assertSame(['foo', 'bar'], $target->parameterKeys());
     }
 
     /**
      * @test
      */
-    public function shouldReturnEmptyArrayWhenNoPathParameters(): void
+    public function shouldReturnEmptyArrayWhenNoParameters(): void
     {
         $target = new Api('GET', 'http://somewhere/');
 
-        $this->assertFalse($target->hasPathParameter());
-        $this->assertSame([], $target->getPathParameter());
+        $this->assertFalse($target->hasParameter());
+        $this->assertSame([], $target->parameterKeys());
     }
 
     /**
      * @test
      */
-    public function shouldBindPathParametersWhenGetUriWithPathParameters(): void
+    public function shouldBindParametersWhenGetUriWithParameters(): void
     {
         $target = new Api('GET', 'http://somewhere/{foo}/{bar}');
 
-        $this->assertSame('http://somewhere/1/2', $target->getUriWithPathParameters(['foo' => 1, 'bar' => 2]));
+        $this->assertSame('http://somewhere/1/2', $target->getUriWithParameters(['foo' => 1, 'bar' => 2]));
     }
 
     /**
      * @test
      */
-    public function shouldBindPathParametersWhenGetUriWithPathParametersBySequence(): void
+    public function shouldBindParametersWhenGetUriWithParametersBySequence(): void
     {
         $target = new Api('GET', 'http://somewhere/{foo}/{bar}');
 
-        $this->assertSame('http://somewhere/1/2', $target->getUriWithPathParameters([1, 2]));
+        $this->assertSame('http://somewhere/1/2', $target->getUriWithParameters([1, 2]));
     }
 
     /**
      * @test
      */
-    public function shouldBindPathParametersWhenGetUriWithPathParametersByMultiArgs(): void
+    public function shouldBindParametersWhenGetUriWithParametersByMultiArgs(): void
     {
         $target = new Api('GET', 'http://somewhere/{foo}/{bar}');
 
-        $this->assertSame('http://somewhere/1/2', $target->getUriWithPathParameters(1, 2));
+        $this->assertSame('http://somewhere/1/2', $target->getUriWithParameters(1, 2));
     }
 
     /**
@@ -84,7 +84,7 @@ class ApiTest extends TestCase
 
         $target = new Api('GET', 'http://somewhere/{foo}/{bar}');
 
-        $this->assertSame('http://somewhere/1/2', $target->getUriWithPathParameters(['foo' => 1]));
+        $this->assertSame('http://somewhere/1/2', $target->getUriWithParameters(['foo' => 1]));
     }
 
     /**
@@ -96,19 +96,19 @@ class ApiTest extends TestCase
 
         $target = new Api('GET', 'http://somewhere/{foo}/{bar}');
 
-        $this->assertSame('http://somewhere/1/2', $target->getUriWithPathParameters(1));
+        $this->assertSame('http://somewhere/1/2', $target->getUriWithParameters(1));
     }
 
     /**
      * @test
      */
-    public function shouldDoNothingWhenNoPathParameters(): void
+    public function shouldDoNothingWhenNoParameters(): void
     {
         $target = new Api('GET', 'http://somewhere/');
 
-        $this->assertSame('http://somewhere/', $target->getUriWithPathParameters(['foo' => 1]));
-        $this->assertSame('http://somewhere/', $target->getUriWithPathParameters([1, 2]));
-        $this->assertSame('http://somewhere/', $target->getUriWithPathParameters(1, 2));
-        $this->assertSame('http://somewhere/', $target->getUriWithPathParameters());
+        $this->assertSame('http://somewhere/', $target->getUriWithParameters(['foo' => 1]));
+        $this->assertSame('http://somewhere/', $target->getUriWithParameters([1, 2]));
+        $this->assertSame('http://somewhere/', $target->getUriWithParameters(1, 2));
+        $this->assertSame('http://somewhere/', $target->getUriWithParameters());
     }
 }

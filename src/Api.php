@@ -68,7 +68,7 @@ class Api
     /**
      * @return array<string>
      */
-    public function getPathParameter(): array
+    public function parameterKeys(): array
     {
         preg_match_all('/\/{(.*)}/U', $this->uri, $binding);
 
@@ -78,7 +78,7 @@ class Api
     /**
      * @return bool
      */
-    public function hasPathParameter(): bool
+    public function hasParameter(): bool
     {
         return (bool)preg_match('/{.+}/', $this->uri);
     }
@@ -95,9 +95,9 @@ class Api
      * @param array<int, mixed> $parameters
      * @return string
      */
-    public function getUriWithPathParameters(...$parameters): string
+    public function getUriWithParameters(...$parameters): string
     {
-        if (!$this->hasPathParameter()) {
+        if (!$this->hasParameter()) {
             return $this->uri;
         }
 
@@ -129,7 +129,7 @@ class Api
      */
     private function buildParametersBySequence(array $values): array
     {
-        $keys = $this->getPathParameter();
+        $keys = $this->parameterKeys();
 
         if (count($keys) !== count($values)) {
             throw new InvalidArgumentException('Parameters count is invalid');
