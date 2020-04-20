@@ -100,14 +100,14 @@ class RestTest extends TestCase
 
         $target = new Rest($mockClient, new HttpFactory());
 
-        $target->addApi('foo', 'get', 'http://somewhere');
+        $target->addApi('foo', 'POST', 'http://somewhere');
 
         $target->call('foo')
             ->withJson(['foo' => 'bar'])
             ->send();
 
         $mockClient->testRequest()
-            ->assertMethod('GET')
+            ->assertMethod('POST')
             ->assertUri('http://somewhere')
             ->assertContentTypeIsJson()
             ->assertBodyContains('{"foo":"bar"}');
@@ -122,14 +122,14 @@ class RestTest extends TestCase
 
         $target = new Rest($mockClient, new HttpFactory());
 
-        $target->addApi('foo', 'get', 'http://somewhere');
+        $target->addApi('foo', 'POST', 'http://somewhere');
 
         $target->call('foo')
             ->withFormUrlencoded(['foo' => 'bar'])
             ->send();
 
         $mockClient->testRequest()
-            ->assertMethod('GET')
+            ->assertMethod('POST')
             ->assertUri('http://somewhere')
             ->assertContentType('application/x-www-form-urlencoded')
             ->assertBodyContains('foo=bar');
