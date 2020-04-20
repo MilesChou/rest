@@ -3,6 +3,7 @@
 namespace MilesChou\Rest;
 
 use MilesChou\Psr\Http\Client\ClientManager;
+use MilesChou\Psr\Http\Client\ClientManagerInterface;
 use MilesChou\Psr\Http\Message\HttpFactory;
 use MilesChou\Psr\Http\Message\HttpFactoryAwareTrait;
 use MilesChou\Psr\Http\Message\HttpFactoryInterface;
@@ -13,7 +14,7 @@ class Rest
     use HttpFactoryAwareTrait;
 
     /**
-     * @var ClientManager
+     * @var ClientManagerInterface
      */
     private $clientManager;
 
@@ -54,16 +55,15 @@ class Rest
 
     /**
      * @param string $name
-     * @return Pending
+     * @return PendingRequest
      */
-    public function call(string $name): Pending
+    public function call(string $name): PendingRequest
     {
         $api = $this->collection->get($name);
 
-        return new Pending(
-            $this->clientManager->driver($api->getDriver()),
-            $this->httpFactory,
-            $api
-        );
+        $request = $this->httpFactory->createRequest($api->getMethod(), $api->getUri());
+        $client = $this->clientManager->driver($api->getDriver());
+
+        return new PendingRequest($request, $client);
     }
 }
