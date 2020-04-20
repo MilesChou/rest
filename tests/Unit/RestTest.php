@@ -69,4 +69,69 @@ class RestTest extends TestCase
             ->assertMethod('GET')
             ->assertUri('http://somewhere?foo=bar');
     }
+
+    /**
+     * @test
+     */
+    public function shouldCanCallWhenCallAnAddedApiWithHeader(): void
+    {
+        $mockClient = MockClient::createAlwaysReturnEmptyResponse();
+
+        $target = new Rest($mockClient, new HttpFactory());
+
+        $target->addApi('foo', 'get', 'http://somewhere');
+
+        $target->call('foo')
+            ->withHeader('foo', 'bar')
+            ->send();
+
+        $mockClient->testRequest()
+            ->assertMethod('GET')
+            ->assertUri('http://somewhere')
+            ->assertHeader('foo', 'bar');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCanCallWhenCallAnAddedApiWithJson(): void
+    {
+        $mockClient = MockClient::createAlwaysReturnEmptyResponse();
+
+        $target = new Rest($mockClient, new HttpFactory());
+
+        $target->addApi('foo', 'get', 'http://somewhere');
+
+        $target->call('foo')
+            ->withJson(['foo' => 'bar'])
+            ->send();
+
+        $mockClient->testRequest()
+            ->assertMethod('GET')
+            ->assertUri('http://somewhere')
+            ->assertContentTypeIsJson()
+            ->assertBodyContains('{"foo":"bar"}');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCanCallWhenCallAnAddedApiWithFormUrlencoded(): void
+    {
+        $mockClient = MockClient::createAlwaysReturnEmptyResponse();
+
+        $target = new Rest($mockClient, new HttpFactory());
+
+        $target->addApi('foo', 'get', 'http://somewhere');
+
+        $target->call('foo')
+            ->withFormUrlencoded(['foo' => 'bar'])
+            ->send();
+
+        $mockClient->testRequest()
+            ->assertMethod('GET')
+            ->assertUri('http://somewhere')
+            ->assertContentType('application/x-www-form-urlencoded')
+            ->assertBodyContains('foo=bar');
+    }
 }

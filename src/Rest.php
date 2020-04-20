@@ -55,7 +55,7 @@ class Rest
 
     /**
      * @param string $name
-     * @param array $parameters
+     * @param array<int, string> $parameters
      * @return PendingRequest
      */
     public function call(string $name, ...$parameters): PendingRequest
@@ -69,6 +69,6 @@ class Rest
 
         $client = $this->clientManager->driver($api->getDriver());
 
-        return new PendingRequest($request, $client);
+        return (new PendingRequest($request, $client))->setHttpFactory($this->httpFactory);
     }
 }
