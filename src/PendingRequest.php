@@ -22,6 +22,16 @@ class PendingRequest extends BasePendingRequest
     }
 
     /**
+     * Return query array in request
+     *
+     * @return array
+     */
+    public function getQuery(): array
+    {
+        return Query::parse($this->getUri()->getQuery());
+    }
+
+    /**
      * Alias to withQuery()
      *
      * @param array $query
@@ -70,7 +80,9 @@ class PendingRequest extends BasePendingRequest
      */
     public function withQuery(array $query): self
     {
-        return $this->withQueryString(Query::build($query));
+        $queryString = Query::build(array_merge($this->getQuery(), $query));
+
+        return $this->withQueryString($queryString);
     }
 
     /**
