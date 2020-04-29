@@ -7,10 +7,30 @@ namespace MilesChou\Rest;
 use MilesChou\Psr\Http\Message\HttpFactoryAwareTrait;
 use MilesChou\Psr\Http\Message\PendingRequest as BasePendingRequest;
 use MilesChou\Rest\Http\Query;
+use Psr\Http\Message\ResponseInterface;
 
 class PendingRequest extends BasePendingRequest
 {
     use HttpFactoryAwareTrait;
+
+    /**
+     * @return ResponseInterface
+     */
+    public function __invoke(): ResponseInterface
+    {
+        return $this->send();
+    }
+
+    /**
+     * Alias to withQuery()
+     *
+     * @param array $query
+     * @return $this
+     */
+    public function query(array $query): self
+    {
+        return $this->withQuery($query);
+    }
 
     /**
      * @param array $array

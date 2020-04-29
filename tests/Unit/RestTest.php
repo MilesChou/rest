@@ -73,7 +73,7 @@ class RestTest extends TestCase
     /**
      * @test
      */
-    public function shouldCanCallWhenCallAnAddedApiWithQuery(): void
+    public function shouldCanCallWhenCallAnAddedApiQuery(): void
     {
         $mockClient = MockClient::createAlwaysReturnEmptyResponse();
 
@@ -81,9 +81,7 @@ class RestTest extends TestCase
 
         $target->addApi('foo', 'get', 'http://somewhere');
 
-        $target->call('foo')
-            ->withQuery(['foo' => 'bar'])
-            ->send();
+        $target->call('foo')->query(['foo' => 'bar'])();
 
         $mockClient->testRequest()
             ->assertMethod('GET')
