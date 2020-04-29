@@ -45,33 +45,27 @@ class PendingRequest extends BasePendingRequest
     /**
      * @param array $array
      * @param string $charset
-     * @return $this
+     * @return static
      */
     public function withJson(array $array, $charset = 'utf-8'): self
     {
         $content = (string)json_encode($array);
 
-        $this->request = $this->request
-            ->withHeader('Content-type', 'application/json;charset=' . $charset)
+        return $this->withHeader('Content-type', 'application/json;charset=' . $charset)
             ->withBody($this->httpFactory->createStream($content));
-
-        return $this;
     }
 
     /**
      * @param array $array
      * @param string $charset
-     * @return $this
+     * @return static
      */
     public function withFormUrlencoded(array $array, $charset = 'utf-8'): self
     {
         $content = Query::build($array);
 
-        $this->request = $this->request
-            ->withHeader('Content-type', 'application/x-www-form-urlencoded;charset=' . $charset)
+        return $this->withHeader('Content-type', 'application/x-www-form-urlencoded;charset=' . $charset)
             ->withBody($this->httpFactory->createStream($content));
-
-        return $this;
     }
 
     /**
