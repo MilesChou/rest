@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MilesChou\Rest;
 
+use MilesChou\Psr\Container\ContainerAwareTrait;
 use MilesChou\Psr\Http\Client\ClientManager;
 use MilesChou\Psr\Http\Client\ClientManagerInterface;
 use MilesChou\Psr\Http\Message\HttpFactory;
@@ -14,6 +15,7 @@ use Psr\Http\Client\ClientInterface;
 
 class Rest
 {
+    use ContainerAwareTrait;
     use HttpFactoryAwareTrait;
     use GroupMixin;
 
@@ -31,6 +33,11 @@ class Rest
      * @var Collection
      */
     private $collection;
+
+    /**
+     * @var array
+     */
+    private $middleware = [];
 
     /**
      * @param ClientInterface $clientManager
@@ -88,7 +95,12 @@ class Rest
 
         $client = $this->clientManager->driver($api->getDriver());
 
-        return (new PendingRequest($request, $client))->setHttpFactory($this->httpFactory);
+        $pendingRequest = (new PendingRequest($request, $client))->setHttpFactory($this->httpFactory);
+
+        return (new Pipeline($this->container))
+            ->send($pendingRequest)
+            ->through($this->middleware)
+            ->thenReturn();
     }
 
     /**
@@ -116,5 +128,16 @@ class Rest
         $parts = parse_url($uri);
 
         return array_key_exists('host', $parts) ? $uri : $this->baseUrl . $uri;
+    }
+
+    /**
+     * @param mixed $middleware
+     * @return $this
+     */
+    public function middleware($middleware): self
+    {
+        $this->middleware[] = $middleware;
+
+        return $this;
     }
 }

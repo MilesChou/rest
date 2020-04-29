@@ -8,7 +8,9 @@ use MilesChou\Psr\Http\Client\ClientManager;
 use MilesChou\Psr\Http\Client\Testing\MockClient;
 use MilesChou\Psr\Http\Message\HttpFactory;
 use MilesChou\Rest\Group;
+use MilesChou\Rest\PendingRequest;
 use MilesChou\Rest\Rest;
+use Psr\Log\Test\TestLogger;
 use Tests\TestCase;
 
 class RestTest extends TestCase
@@ -193,6 +195,7 @@ class RestTest extends TestCase
             ->assertMethod('POST')
             ->assertUri('http://somewhere');
     }
+
     /**
      * @test
      */
@@ -211,5 +214,38 @@ class RestTest extends TestCase
         $mockClient->testRequest()
             ->assertMethod('GET')
             ->assertUri('http://somewhere/foo/some');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldPassThePipelineWhenCallApi(): void
+    {
+        $testLogger = new TestLogger();
+        $mockClient = MockClient::createAlwaysReturnEmptyResponse();
+
+        $target = new Rest(new ClientManager($mockClient), new HttpFactory());
+
+        $target->middleware(function (PendingRequest $request, callable $next) use ($testLogger) {
+            $testLogger->info('before');
+
+            $request = $next($request);
+
+            $testLogger->info('after');
+
+            return $request;
+        });
+
+        $target->addApi('foo', 'get', 'http://somewhere/foo');
+
+        $target->call('foo')
+            ->send();
+
+        $this->assertTrue($testLogger->hasInfo('before'));
+        $this->assertTrue($testLogger->hasInfo('after'));
+
+        $mockClient->testRequest()
+            ->assertMethod('GET')
+            ->assertUri('http://somewhere/foo');
     }
 }
