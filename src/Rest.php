@@ -60,7 +60,7 @@ class Rest
      */
     public function __call($name, $arguments)
     {
-        return $this->call($name, $arguments);
+        return $this->call($name, ...$arguments);
     }
 
     /**
