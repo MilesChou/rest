@@ -105,16 +105,11 @@ class Rest
 
     /**
      * @param string $baseUrl
-     * @return Rest
+     * @return $this
      */
-    public function setBaseUrl(string $baseUrl): Rest
+    public function setBaseUrl(string $baseUrl): self
     {
-        // Normalize
-        if ('/' === substr($baseUrl, -1)) {
-            $baseUrl = substr($baseUrl, 0, -1);
-        }
-
-        $this->baseUrl = $baseUrl;
+        $this->baseUrl = rtrim($baseUrl, '/');
 
         return $this;
     }
